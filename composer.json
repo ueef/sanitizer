@@ -1,0 +1,26 @@
+{
+  "name": "ueef/sanitizer",
+  "type": "library",
+  "license": "MIT",
+  "description": "",
+  "authors": [
+    {
+      "name": "ueef",
+      "email": "artem@arkadev.org"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "ext-mbstring": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ueef\\Sanitizer\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Ueef\\Sanitizer\\Tests\\": "tests"
+    }
+  }
+}

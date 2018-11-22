@@ -44,7 +44,7 @@ class Sanitizer
         }
     }
 
-    private function applyRule($value, string $rule, string $key)
+    private function applyRule(&$value, string $rule, string $key): void
     {
         switch ($rule) {
             case self::REQ:
@@ -105,8 +105,6 @@ class Sanitizer
             default:
                 throw new ValidationErrorException(sprintf("rule \"%s\" is undefined", $rule), $rule, $key);
         }
-
-        return $value;
     }
 
     private function validateReq($value, string $rule, string $key): void

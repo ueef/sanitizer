@@ -27,7 +27,7 @@ class Sanitizer
     public function sanitize(&$value, array $rules, string $key = '')
     {
         foreach ($rules as $rule) {
-            $value = $this->applyRule($value, $rule, $key);
+            $this->applyRule($value, $rule, $key);
         }
     }
 

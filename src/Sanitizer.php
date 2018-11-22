@@ -41,6 +41,7 @@ class Sanitizer
                 $value = null;
             }
             $this->sanitize($value, $rules, $key);
+            unset($value);
         }
     }
 

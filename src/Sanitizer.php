@@ -10,12 +10,14 @@ class Sanitizer
     const REQ = 'req';
     const INT = 'int';
     const NAT = 'nat';
+    const FLT = 'flt';
     const NUM = 'num';
     const STR = 'str';
     const BLN = 'bln';
     const ARR = 'arr';
     const ARR_INT = 'arr_int';
     const ARR_NAT = 'arr_nat';
+    const ARR_FLT = 'arr_flt';
     const ARR_NUM = 'arr_num';
     const ARR_STR = 'arr_str';
 
@@ -23,6 +25,14 @@ class Sanitizer
     const CLR = 'clr';
     const LWR = 'lwr';
 
+    /** @var bool */
+    private $strict;
+
+
+    public function __construct(bool $strict = true)
+    {
+        $this->strict = $strict;
+    }
 
     public function sanitize(&$value, array $rules, string $key = '')
     {
@@ -51,55 +61,48 @@ class Sanitizer
             case self::REQ:
                 $this->validateReq($value, $key, $rule);
                 break;
-
             case self::INT:
                 $this->validateInt($value, $key, $rule);
                 break;
-
             case self::NAT:
                 $this->validateNat($value, $key, $rule);
                 break;
-
+            case self::FLT:
+                $this->validateFlt($value, $key, $rule);
+                break;
             case self::NUM:
                 $this->validateNum($value, $key, $rule);
                 break;
-
             case self::STR:
                 $this->validateStr($value, $key, $rule);
                 break;
-
             case self::BLN:
                 $this->validateBln($value, $key, $rule);
                 break;
-
             case self::ARR:
                 $this->validateArr($value, $key, $rule);
                 break;
-
             case self::ARR_INT:
                 $this->validateArrInt($value, $key, $rule);
                 break;
-
             case self::ARR_NAT:
                 $this->validateArrNat($value, $key, $rule);
                 break;
-
+            case self::ARR_FLT:
+                $this->validateArrFlt($value, $key, $rule);
+                break;
             case self::ARR_NUM:
                 $this->validateArrNum($value, $key, $rule);
                 break;
-
             case self::ARR_STR:
                 $this->validateArrStr($value, $key, $rule);
                 break;
-
             case self::TRM:
                 $this->filterTrm($value);
                 break;
-
             case self::CLR:
                 $this->filterClr($value);
                 break;
-
             case self::LWR:
                 $this->filterLwr($value);
                 break;
@@ -117,7 +120,7 @@ class Sanitizer
 
     private function validateInt($value, string $rule, string $key): void
     {
-        if (null === $value || is_integer($value)) {
+        if (null === $value || $this->isInteger($value)) {
             return;
         }
 
@@ -126,16 +129,25 @@ class Sanitizer
 
     private function validateNat($value, string $rule, string $key): void
     {
-        if (null === $value || (is_integer($value) && $value > 0)) {
+        if (null === $value || ($this->isInteger($value) && $value > 0)) {
             return;
         }
 
         throw new ValidationErrorException("\"%s\" is not a natural number", $rule, $key);
     }
 
+    private function validateFlt($value, string $rule, string $key): void
+    {
+        if (null === $value || $this->isFloat($value)) {
+            return;
+        }
+
+        throw new ValidationErrorException("\"%s\" is not a float", $rule, $key);
+    }
+
     private function validateNum($value, string $rule, string $key): void
     {
-        if (null === $value || is_numeric($value)) {
+        if (null === $value || $this->isNumeric($value)) {
             return;
         }
 
@@ -144,7 +156,7 @@ class Sanitizer
 
     private function validateStr($value, string $rule, string $key): void
     {
-        if (null === $value || is_string($value)) {
+        if (null === $value || $this->isString($value)) {
             return;
         }
 
@@ -153,7 +165,7 @@ class Sanitizer
 
     private function validateBln($value, string $rule, string $key): void
     {
-        if (null === $value || is_bool($value)) {
+        if (null === $value || $this->isBool($value)) {
             return;
         }
 
@@ -178,7 +190,7 @@ class Sanitizer
         $this->validateArr($values, $key, $rule);
 
         foreach ($values as $value) {
-            if (!is_integer($value)) {
+            if (!$this->isInteger($value)) {
                 throw new ValidationErrorException("\"%s\" is not an array of integers", $rule, $key);
             }
         }
@@ -193,8 +205,23 @@ class Sanitizer
         $this->validateArr($values, $key, $rule);
 
         foreach ($values as $value) {
-            if (!is_integer($value) || $value < 1) {
+            if (!$this->isInteger($value) || $value < 1) {
                 throw new ValidationErrorException("\"%s\" is not an array of natural numbers", $rule, $key);
+            }
+        }
+    }
+
+    private function validateArrFlt($values, string $rule, string $key): void
+    {
+        if (null === $values) {
+            return;
+        }
+
+        $this->validateArr($values, $key, $rule);
+
+        foreach ($values as $value) {
+            if (!$this->isFloat($value)) {
+                throw new ValidationErrorException("\"%s\" is not an array of floats", $rule, $key);
             }
         }
     }
@@ -208,7 +235,7 @@ class Sanitizer
         $this->validateArr($values, $key, $rule);
 
         foreach ($values as $value) {
-            if (!is_numeric($value)) {
+            if (!$this->isNumeric($value)) {
                 throw new ValidationErrorException("\"%s\" is not an array of numbers", $rule, $key);
             }
         }
@@ -223,7 +250,7 @@ class Sanitizer
         $this->validateArr($values, $key, $rule);
 
         foreach ($values as $value) {
-            if (!is_string($value)) {
+            if (!$this->isString($value)) {
                 throw new ValidationErrorException("\"%s\" is not an array of strings", $rule, $key);
             }
         }
@@ -279,5 +306,62 @@ class Sanitizer
         foreach ($items as &$item) {
             $item = mb_convert_case($item, MB_CASE_LOWER);
         }
+    }
+
+    private function isBool(&$value): bool
+    {
+        if (is_bool($value)) {
+            return true;
+        }
+        if ($this->strict) {
+            return false;
+        }
+        $value = (bool) $value;
+
+        return true;
+    }
+
+    private function isFloat(&$value): bool
+    {
+        if (is_float($value)) {
+            return true;
+        }
+        if ($this->strict) {
+            return false;
+        }
+        $value = (float) $value;
+
+        return true;
+    }
+
+    private function isInteger(&$value): bool
+    {
+        if (is_integer($value)) {
+            return true;
+        }
+        if ($this->strict) {
+            return false;
+        }
+        $value = (int) $value;
+
+        return true;
+    }
+
+    private function isNumeric(&$value): bool
+    {
+        return is_numeric($value);
+    }
+
+    private function isString(&$value): bool
+    {
+        if (is_string($value)) {
+            return true;
+        }
+        if ($this->strict) {
+            return false;
+        }
+        $value = (string) $value;
+
+        return true;
     }
 }

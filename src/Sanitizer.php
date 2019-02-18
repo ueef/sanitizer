@@ -41,18 +41,15 @@ class Sanitizer
         }
     }
 
-    public function sanitizeArray(array &$data, array $rulesByKey)
+    public function sanitizeArray(array $data, array $rulesByKey): array
     {
         $data = array_intersect_key($data, $rulesByKey);
         foreach ($rulesByKey as $key => $rules) {
-            if (isset($data[$key])) {
-                $value = &$data[$key];
-            } else {
-                $value = null;
-            }
-            $this->sanitize($value, $rules, $key);
+            $this->sanitize($data[$key], $rules, $key);
             unset($value);
         }
+
+        return $data;
     }
 
     private function applyRule(&$value, string $rule, string $key): void

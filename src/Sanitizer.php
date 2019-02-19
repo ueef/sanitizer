@@ -50,7 +50,7 @@ class Sanitizer
             } else {
                 $value = null;
             }
-            $this->sanitize($data[$key], $rules, $key);
+            $this->sanitize($value, $rules, $key);
             unset($value);
         }
 

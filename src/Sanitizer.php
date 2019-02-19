@@ -45,6 +45,11 @@ class Sanitizer
     {
         $data = array_intersect_key($data, $rulesByKey);
         foreach ($rulesByKey as $key => $rules) {
+            if (isset($data[$key])) {
+                $value = &$data[$key];
+            } else {
+                $value = null;
+            }
             $this->sanitize($data[$key], $rules, $key);
             unset($value);
         }

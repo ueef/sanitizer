@@ -9,6 +9,7 @@ class Sanitizer
 {
     const MODE_SOFT = 1;
     const MODE_STRICT = 2;
+    const MODE_CONVERSION = 3;
 
     const REQ = 'req';
     const INT = 'int';
@@ -287,7 +288,7 @@ class Sanitizer
             return true;
         }
 
-        if (self::MODE_SOFT == $this->mode) {
+        if (self::MODE_CONVERSION == $this->mode || self::MODE_SOFT == $this->mode) {
             $value = [];
             return true;
         }
@@ -300,7 +301,7 @@ class Sanitizer
         if (is_bool($value)) {
             return true;
         }
-        if (self::MODE_SOFT == $this->mode) {
+        if (self::MODE_CONVERSION == $this->mode || self::MODE_SOFT == $this->mode) {
             $value = (bool) $value;
             return true;
         }
@@ -313,7 +314,7 @@ class Sanitizer
         if (is_float($value)) {
             return true;
         }
-        if (self::MODE_SOFT == $this->mode) {
+        if (self::MODE_CONVERSION == $this->mode || (self::MODE_SOFT == $this->mode && is_numeric($value))) {
             $value = (float) $value;
             return true;
         }
@@ -326,7 +327,7 @@ class Sanitizer
         if (is_integer($value)) {
             return true;
         }
-        if (self::MODE_SOFT == $this->mode) {
+        if (self::MODE_CONVERSION == $this->mode || (self::MODE_SOFT == $this->mode && is_numeric($value))) {
             $value = (int) $value;
             return true;
         }
@@ -339,7 +340,7 @@ class Sanitizer
         if (is_string($value)) {
             return true;
         }
-        if (self::MODE_SOFT == $this->mode) {
+        if (self::MODE_CONVERSION == $this->mode || self::MODE_SOFT == $this->mode) {
             $value = (string) $value;
             return true;
         }

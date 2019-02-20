@@ -7,18 +7,19 @@ use Ueef\Sanitizer\Exceptions\ValidationErrorException;
 
 class Sanitizer
 {
+    const MODE_SOFT = 1;
+    const MODE_STRICT = 2;
+
     const REQ = 'req';
     const INT = 'int';
     const NAT = 'nat';
     const FLT = 'flt';
-    const NUM = 'num';
     const STR = 'str';
     const BLN = 'bln';
     const ARR = 'arr';
     const ARR_INT = 'arr_int';
     const ARR_NAT = 'arr_nat';
     const ARR_FLT = 'arr_flt';
-    const ARR_NUM = 'arr_num';
     const ARR_STR = 'arr_str';
 
     const TRM = 'trm';
@@ -26,12 +27,12 @@ class Sanitizer
     const LWR = 'lwr';
 
     /** @var bool */
-    private $strict;
+    private $mode;
 
 
-    public function __construct(bool $strict = true)
+    public function __construct(int $mode = self::MODE_STRICT)
     {
-        $this->strict = $strict;
+        $this->mode = $mode;
     }
 
     public function sanitize(&$value, array $rules, string $key = '')
@@ -72,9 +73,6 @@ class Sanitizer
             case self::FLT:
                 $this->validateFlt($value, $key, $rule);
                 break;
-            case self::NUM:
-                $this->validateNum($value, $key, $rule);
-                break;
             case self::STR:
                 $this->validateStr($value, $key, $rule);
                 break;
@@ -92,9 +90,6 @@ class Sanitizer
                 break;
             case self::ARR_FLT:
                 $this->validateArrFlt($value, $key, $rule);
-                break;
-            case self::ARR_NUM:
-                $this->validateArrNum($value, $key, $rule);
                 break;
             case self::ARR_STR:
                 $this->validateArrStr($value, $key, $rule);
@@ -147,15 +142,6 @@ class Sanitizer
         throw new ValidationErrorException("\"%s\" is not a float", $rule, $key);
     }
 
-    private function validateNum($value, string $rule, string $key): void
-    {
-        if (null === $value || $this->isNumeric($value)) {
-            return;
-        }
-
-        throw new ValidationErrorException("\"%s\" is not a number", $rule, $key);
-    }
-
     private function validateStr($value, string $rule, string $key): void
     {
         if (null === $value || $this->isString($value)) {
@@ -176,7 +162,7 @@ class Sanitizer
 
     private function validateArr($values, string $rule, string $key): void
     {
-        if (null === $values || is_array($values)) {
+        if (null === $values || $this->isArray($values)) {
             return;
         }
 
@@ -224,21 +210,6 @@ class Sanitizer
         foreach ($values as $value) {
             if (!$this->isFloat($value)) {
                 throw new ValidationErrorException("\"%s\" is not an array of floats", $rule, $key);
-            }
-        }
-    }
-
-    private function validateArrNum($values, string $rule, string $key): void
-    {
-        if (null === $values) {
-            return;
-        }
-
-        $this->validateArr($values, $key, $rule);
-
-        foreach ($values as $value) {
-            if (!$this->isNumeric($value)) {
-                throw new ValidationErrorException("\"%s\" is not an array of numbers", $rule, $key);
             }
         }
     }
@@ -310,17 +281,31 @@ class Sanitizer
         }
     }
 
+    private function isArray(&$value): bool
+    {
+        if (is_array($value)) {
+            return true;
+        }
+
+        if (self::MODE_SOFT == $this->mode) {
+            $value = [];
+            return true;
+        }
+
+        return false;
+    }
+
     private function isBool(&$value): bool
     {
         if (is_bool($value)) {
             return true;
         }
-        if ($this->strict) {
-            return false;
+        if (self::MODE_SOFT == $this->mode) {
+            $value = (bool) $value;
+            return true;
         }
-        $value = (bool) $value;
 
-        return true;
+        return false;
     }
 
     private function isFloat(&$value): bool
@@ -328,12 +313,12 @@ class Sanitizer
         if (is_float($value)) {
             return true;
         }
-        if ($this->strict) {
-            return false;
+        if (self::MODE_SOFT == $this->mode) {
+            $value = (float) $value;
+            return true;
         }
-        $value = (float) $value;
 
-        return true;
+        return false;
     }
 
     private function isInteger(&$value): bool
@@ -341,17 +326,12 @@ class Sanitizer
         if (is_integer($value)) {
             return true;
         }
-        if ($this->strict) {
-            return false;
+        if (self::MODE_SOFT == $this->mode) {
+            $value = (int) $value;
+            return true;
         }
-        $value = (int) $value;
 
-        return true;
-    }
-
-    private function isNumeric(&$value): bool
-    {
-        return is_numeric($value);
+        return false;
     }
 
     private function isString(&$value): bool
@@ -359,11 +339,11 @@ class Sanitizer
         if (is_string($value)) {
             return true;
         }
-        if ($this->strict) {
-            return false;
+        if (self::MODE_SOFT == $this->mode) {
+            $value = (string) $value;
+            return true;
         }
-        $value = (string) $value;
 
-        return true;
+        return false;
     }
 }

@@ -63,7 +63,7 @@ class Sanitizer
     {
         switch ($rule) {
             case self::REQ:
-                $this->validateReq($value, );
+                $this->validateReq($value, $rule, $key);
                 break;
             case self::INT:
                 $this->validateInt($value, $rule, $key);

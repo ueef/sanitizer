@@ -3,7 +3,10 @@ declare(strict_types=1);
 
 namespace Ueef\Sanitizer\Exceptions;
 
-class ValidationErrorException extends \Exception
+use Exception;
+use Ueef\Sanitizer\Interfaces\ValidationErrorInterface;
+
+class ValidationErrorException extends Exception implements ValidationErrorInterface
 {
     /** @var string */
     protected $key;

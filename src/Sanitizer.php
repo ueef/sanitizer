@@ -122,7 +122,7 @@ class Sanitizer
             return;
         }
 
-        throw new ValidationErrorException("\"%s\" is not an integer", $rule, $key);
+        throw new ValidationErrorException(sprintf("\"%s\" is not an integer", $key), $rule, $key);
     }
 
     private function validateNat(&$value, string $rule, string $key): void
@@ -131,7 +131,7 @@ class Sanitizer
             return;
         }
 
-        throw new ValidationErrorException("\"%s\" is not a natural number", $rule, $key);
+        throw new ValidationErrorException(sprintf("\"%s\" is not a natural number", $key), $rule, $key);
     }
 
     private function validateFlt(&$value, string $rule, string $key): void
@@ -140,7 +140,7 @@ class Sanitizer
             return;
         }
 
-        throw new ValidationErrorException("\"%s\" is not a float", $rule, $key);
+        throw new ValidationErrorException(sprintf("\"%s\" is not a float", $key), $rule, $key);
     }
 
     private function validateStr(&$value, string $rule, string $key): void
@@ -149,7 +149,7 @@ class Sanitizer
             return;
         }
 
-        throw new ValidationErrorException("\"%s\" is not a string", $rule, $key);
+        throw new ValidationErrorException(sprintf("\"%s\" is not a string", $key), $rule, $key);
     }
 
     private function validateBln(&$value, string $rule, string $key): void
@@ -158,7 +158,7 @@ class Sanitizer
             return;
         }
 
-        throw new ValidationErrorException("\"%s\" is not a boolean", $rule, $key);
+        throw new ValidationErrorException(sprintf("\"%s\" is not a boolean", $key), $rule, $key);
     }
 
     private function validateArr(&$values, string $rule, string $key): void
@@ -167,7 +167,7 @@ class Sanitizer
             return;
         }
 
-        throw new ValidationErrorException("\"%s\" is not an array", $rule, $key);
+        throw new ValidationErrorException(sprintf("\"%s\" is not an array", $key), $rule, $key);
     }
 
     private function validateArrInt(&$values, string $rule, string $key): void
@@ -180,7 +180,7 @@ class Sanitizer
 
         foreach ($values as &$value) {
             if (!$this->isInteger($value)) {
-                throw new ValidationErrorException("\"%s\" is not an array of integers", $rule, $key);
+                throw new ValidationErrorException(sprintf("\"%s\" is not an array of integers", $key), $rule, $key);
             }
         }
     }
@@ -195,7 +195,7 @@ class Sanitizer
 
         foreach ($values as &$value) {
             if (!$this->isInteger($value) || $value < 1) {
-                throw new ValidationErrorException("\"%s\" is not an array of natural numbers", $rule, $key);
+                throw new ValidationErrorException(sprintf("\"%s\" is not an array of natural numbers", $key), $rule, $key);
             }
         }
     }
@@ -210,7 +210,7 @@ class Sanitizer
 
         foreach ($values as &$value) {
             if (!$this->isFloat($value)) {
-                throw new ValidationErrorException("\"%s\" is not an array of floats", $rule, $key);
+                throw new ValidationErrorException(sprintf("\"%s\" is not an array of floats", $key), $rule, $key);
             }
         }
     }
@@ -225,7 +225,7 @@ class Sanitizer
 
         foreach ($values as &$value) {
             if (!$this->isString($value)) {
-                throw new ValidationErrorException("\"%s\" is not an array of strings", $rule, $key);
+                throw new ValidationErrorException(sprintf("\"%s\" is not an array of strings", $key), $rule, $key);
             }
         }
     }

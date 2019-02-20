@@ -63,37 +63,37 @@ class Sanitizer
     {
         switch ($rule) {
             case self::REQ:
-                $this->validateReq($value, $key, $rule);
+                $this->validateReq($value, );
                 break;
             case self::INT:
-                $this->validateInt($value, $key, $rule);
+                $this->validateInt($value, $rule, $key);
                 break;
             case self::NAT:
-                $this->validateNat($value, $key, $rule);
+                $this->validateNat($value, $rule, $key);
                 break;
             case self::FLT:
-                $this->validateFlt($value, $key, $rule);
+                $this->validateFlt($value, $rule, $key);
                 break;
             case self::STR:
-                $this->validateStr($value, $key, $rule);
+                $this->validateStr($value, $rule, $key);
                 break;
             case self::BLN:
-                $this->validateBln($value, $key, $rule);
+                $this->validateBln($value, $rule, $key);
                 break;
             case self::ARR:
-                $this->validateArr($value, $key, $rule);
+                $this->validateArr($value, $rule, $key);
                 break;
             case self::ARR_INT:
-                $this->validateArrInt($value, $key, $rule);
+                $this->validateArrInt($value, $rule, $key);
                 break;
             case self::ARR_NAT:
-                $this->validateArrNat($value, $key, $rule);
+                $this->validateArrNat($value, $rule, $key);
                 break;
             case self::ARR_FLT:
-                $this->validateArrFlt($value, $key, $rule);
+                $this->validateArrFlt($value, $rule, $key);
                 break;
             case self::ARR_STR:
-                $this->validateArrStr($value, $key, $rule);
+                $this->validateArrStr($value, $rule, $key);
                 break;
             case self::TRM:
                 $this->filterTrm($value);

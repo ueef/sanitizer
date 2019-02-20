@@ -109,14 +109,14 @@ class Sanitizer
         }
     }
 
-    private function validateReq($value, string $rule, string $key): void
+    private function validateReq(&$value, string $rule, string $key): void
     {
         if (null === $value) {
             throw new ValidationErrorException("\"%s\" is required", $rule, $key);
         }
     }
 
-    private function validateInt($value, string $rule, string $key): void
+    private function validateInt(&$value, string $rule, string $key): void
     {
         if (null === $value || $this->isInteger($value)) {
             return;
@@ -125,7 +125,7 @@ class Sanitizer
         throw new ValidationErrorException("\"%s\" is not an integer", $rule, $key);
     }
 
-    private function validateNat($value, string $rule, string $key): void
+    private function validateNat(&$value, string $rule, string $key): void
     {
         if (null === $value || ($this->isInteger($value) && $value > 0)) {
             return;
@@ -134,7 +134,7 @@ class Sanitizer
         throw new ValidationErrorException("\"%s\" is not a natural number", $rule, $key);
     }
 
-    private function validateFlt($value, string $rule, string $key): void
+    private function validateFlt(&$value, string $rule, string $key): void
     {
         if (null === $value || $this->isFloat($value)) {
             return;
@@ -143,7 +143,7 @@ class Sanitizer
         throw new ValidationErrorException("\"%s\" is not a float", $rule, $key);
     }
 
-    private function validateStr($value, string $rule, string $key): void
+    private function validateStr(&$value, string $rule, string $key): void
     {
         if (null === $value || $this->isString($value)) {
             return;
@@ -152,7 +152,7 @@ class Sanitizer
         throw new ValidationErrorException("\"%s\" is not a string", $rule, $key);
     }
 
-    private function validateBln($value, string $rule, string $key): void
+    private function validateBln(&$value, string $rule, string $key): void
     {
         if (null === $value || $this->isBool($value)) {
             return;
@@ -161,7 +161,7 @@ class Sanitizer
         throw new ValidationErrorException("\"%s\" is not a boolean", $rule, $key);
     }
 
-    private function validateArr($values, string $rule, string $key): void
+    private function validateArr(&$values, string $rule, string $key): void
     {
         if (null === $values || $this->isArray($values)) {
             return;
@@ -170,7 +170,7 @@ class Sanitizer
         throw new ValidationErrorException("\"%s\" is not an array", $rule, $key);
     }
 
-    private function validateArrInt($values, string $rule, string $key): void
+    private function validateArrInt(&$values, string $rule, string $key): void
     {
         if (null === $values) {
             return;
@@ -178,14 +178,14 @@ class Sanitizer
 
         $this->validateArr($values, $key, $rule);
 
-        foreach ($values as $value) {
+        foreach ($values as &$value) {
             if (!$this->isInteger($value)) {
                 throw new ValidationErrorException("\"%s\" is not an array of integers", $rule, $key);
             }
         }
     }
 
-    private function validateArrNat($values, string $rule, string $key): void
+    private function validateArrNat(&$values, string $rule, string $key): void
     {
         if (null === $values) {
             return;
@@ -193,14 +193,14 @@ class Sanitizer
 
         $this->validateArr($values, $key, $rule);
 
-        foreach ($values as $value) {
+        foreach ($values as &$value) {
             if (!$this->isInteger($value) || $value < 1) {
                 throw new ValidationErrorException("\"%s\" is not an array of natural numbers", $rule, $key);
             }
         }
     }
 
-    private function validateArrFlt($values, string $rule, string $key): void
+    private function validateArrFlt(&$values, string $rule, string $key): void
     {
         if (null === $values) {
             return;
@@ -208,14 +208,14 @@ class Sanitizer
 
         $this->validateArr($values, $key, $rule);
 
-        foreach ($values as $value) {
+        foreach ($values as &$value) {
             if (!$this->isFloat($value)) {
                 throw new ValidationErrorException("\"%s\" is not an array of floats", $rule, $key);
             }
         }
     }
 
-    private function validateArrStr($values, string $rule, string $key): void
+    private function validateArrStr(&$values, string $rule, string $key): void
     {
         if (null === $values) {
             return;
@@ -223,7 +223,7 @@ class Sanitizer
 
         $this->validateArr($values, $key, $rule);
 
-        foreach ($values as $value) {
+        foreach ($values as &$value) {
             if (!$this->isString($value)) {
                 throw new ValidationErrorException("\"%s\" is not an array of strings", $rule, $key);
             }

@@ -288,7 +288,7 @@ class Sanitizer
             return true;
         }
 
-        if (self::MODE_CONVERSION == $this->mode || self::MODE_SOFT == $this->mode) {
+        if (self::MODE_CONVERSION == $this->mode) {
             $value = [];
             return true;
         }

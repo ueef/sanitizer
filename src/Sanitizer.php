@@ -176,7 +176,7 @@ class Sanitizer
             return;
         }
 
-        $this->validateArr($values, $key, $rule);
+        $this->validateArr($values, $rule, $key);
 
         foreach ($values as &$value) {
             if (!$this->isInteger($value)) {
@@ -191,7 +191,7 @@ class Sanitizer
             return;
         }
 
-        $this->validateArr($values, $key, $rule);
+        $this->validateArr($values, $rule, $key);
 
         foreach ($values as &$value) {
             if (!$this->isInteger($value) || $value < 1) {
@@ -206,7 +206,7 @@ class Sanitizer
             return;
         }
 
-        $this->validateArr($values, $key, $rule);
+        $this->validateArr($values, $rule, $key);
 
         foreach ($values as &$value) {
             if (!$this->isFloat($value)) {
@@ -221,7 +221,7 @@ class Sanitizer
             return;
         }
 
-        $this->validateArr($values, $key, $rule);
+        $this->validateArr($values, $rule, $key);
 
         foreach ($values as &$value) {
             if (!$this->isString($value)) {

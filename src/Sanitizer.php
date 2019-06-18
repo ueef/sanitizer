@@ -22,6 +22,7 @@ class Sanitizer
     const ARR_NAT = 'arr_nat';
     const ARR_FLT = 'arr_flt';
     const ARR_STR = 'arr_str';
+    const ARR_BLN = 'arr_bln';
 
     const TRM = 'trm';
     const CLR = 'clr';
@@ -94,6 +95,9 @@ class Sanitizer
                 break;
             case self::ARR_STR:
                 $this->validateArrStr($value, $rule, $key);
+                break;
+            case self::ARR_BLN:
+                $this->validateArrBln($value, $rule, $key);
                 break;
             case self::TRM:
                 $this->filterTrm($value);
@@ -226,6 +230,21 @@ class Sanitizer
         foreach ($values as &$value) {
             if (!$this->isString($value)) {
                 throw new ValidationErrorException(sprintf("\"%s\" is not an array of strings", $key), $rule, $key);
+            }
+        }
+    }
+
+    private function validateArrBln(&$values, string $rule, string $key): void
+    {
+        if (null === $values) {
+            return;
+        }
+
+        $this->validateArr($values, $rule, $key);
+
+        foreach ($values as &$value) {
+            if (!$this->isBool($value)) {
+                throw new ValidationErrorException(sprintf("\"%s\" is not an array of booleans", $key), $rule, $key);
             }
         }
     }
